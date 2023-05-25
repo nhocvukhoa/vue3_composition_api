@@ -28,6 +28,7 @@
         >
           <p class="main-text">{{ note.text }}</p>
           <p class="date">{{ note.date.toLocaleDateString("en-US") }}</p>
+          <button @click="delNote(note.id)">Delete</button>
         </div>
       </div>
     </div>
@@ -157,6 +158,13 @@ const addNote = () => {
   showModal.value = false;
   note.value = "";
   error.value = "";
-  console.log(notes);
+  console.log(notes.value);
 };
+
+const delNote = (noteId) => {
+  if (confirm("Are you sure you want to delete")) {
+    notes.value = notes.value.filter(note => note.id !== noteId)
+  }
+  console.log(notes)
+}
 </script>
