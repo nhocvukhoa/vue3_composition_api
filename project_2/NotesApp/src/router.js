@@ -13,6 +13,11 @@ const routes = [
     name: 'add-note',
     component: () => import('./pages/AddNote.vue'),
   },
+  {
+    path: '/notes/edit/:id',
+    name: 'edit-note',
+    component: () => import('./pages/EditNote.vue'),
+  },
 ]
 
 const router = createRouter({

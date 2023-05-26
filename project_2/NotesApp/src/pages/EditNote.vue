@@ -1,12 +1,12 @@
 <template>
-  <div class="add-note">
+  <div class="edit-note">
     <div class="card">
       <div class="card-body">
-        <h1>Add Note</h1>
-        <textarea v-model="notes.text" name="text" id="text" cols="30" rows="10"></textarea>
+        <h1>Edit Note </h1>
+        <textarea v-model="note.text" name="text" id="text" cols="30" rows="10"></textarea>
         <div class="action">
-          <button class="create" @click="createNote">Create</button>
-          <button class="back" @click="goHome">Back</button>
+          <button @click="updateNote(id)" class="update">Update</button>
+          <button @click="goHome" class="back">Back</button>
         </div>
       </div>
     </div>
@@ -14,7 +14,7 @@
 </template>
 
 <style lang="scss" scoped>
-.add-note {
+.edit-note {
   width: 100%;
   height: 100%;
   display: flex;
@@ -37,14 +37,14 @@
         display: flex;
         justify-content: flex-end;
         margin-top: 10px;
-        .create, .back {
+        .update, .back {
           padding: 10px 20px;
           font-size: 20px;
           color: #fff;
           border: none;
           cursor: pointer;
         }
-        .create {
+        .update {
           background-color: #218838;
           margin-top: 10px;
           margin-right: 10px;
@@ -61,26 +61,43 @@
 
 <script setup>
 import axios from 'axios'
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { reactive } from 'vue'
+import { useRoute, useRouter } from 'vue-router';
 
-const router = useRouter()
-const notes = reactive({
+const route = useRoute();
+const router = useRouter();
+const id = route.params.id;
+const note = reactive({
   text: ''
 })
 
-const createNote = () => {
-  axios.post('http://127.0.0.1:8000/api/notes', notes)
-  .then((response) => {
-      console.log(response.data.data)
-      router.push({ name: 'home' })
-  })
-  .catch((error) => {
-      console.log(error)
-  })
+const getNoteEdit = async() => {
+  await axios
+    .get(`http://127.0.0.1:8000/api/notes/edit/${route.params.id}`)
+    .then((response) => {
+      note.text = response.data.data.text;
+    })
+    .catch((error) => {
+      console.log(error.response);
+    })
+}
+
+const updateNote = async(id) => {
+  await axios
+    .put(`http://127.0.0.1:8000/api/notes/${id}`, note)
+    .then((response) => {
+      if (response.status == 200) {
+        router.push({ name: 'home' })
+      }
+    })
+    .catch((error) => {
+      console.log(error.response);
+    })
 }
 
 const goHome = () => {
   router.push({ name: 'home' })
 }
+
+getNoteEdit()
 </script>

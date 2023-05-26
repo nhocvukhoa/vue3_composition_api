@@ -8,8 +8,10 @@
       <div class="cards-container">
         <div v-for="note in notes" :key="note.id" class="card">
           <p class="main-text">{{ note.text }}</p>
-          <button @click="delNote(note.id)">Delete</button>
-          <button @click="editOrAdd">Edit</button>
+          <div class="action">
+            <button @click="editNote(note.id)" class="edit">Edit</button>
+            <button @click="delNote(note.id)" class="delete">Delete</button>
+          </div>
         </div>
       </div>
     </div>
@@ -67,10 +69,22 @@ main {
         margin-right: 20px;
         margin-bottom: 20px;
 
-        .date {
-          font-size: 12.5px;
-          font-weight: bold;
+       .action {
+        display: flex;
+        justify-content: end;
+        .edit, .delete {
+          border: none;
+          padding: 10px 20px;
+          cursor: pointer;
         }
+        .edit {
+          background-color: #0068D7;
+          margin-right: 10px;
+        }
+        .delete {
+          background-color: #C82333; 
+        }
+       }
       }
     }
   }
@@ -103,6 +117,10 @@ getNotes()
 
 const addNote = () => {
   router.push({ name: 'add-note' })
+}
+
+const editNote = (id) => {
+  router.push({ name: 'edit-note', params: { id: id} })
 }
 
 const delNote = async (id) => {
