@@ -70,10 +70,13 @@ const notes = reactive({
 })
 
 const createNote = () => {
-  axios.post('http://127.0.0.1:8000/api/notes/create', notes)
+  axios.post('http://127.0.0.1:8000/api/notes', notes)
   .then((response) => {
       console.log(response.data.data)
       router.push({ name: 'home' })
+  })
+  .catch((error) => {
+      console.log(error)
   })
 }
 

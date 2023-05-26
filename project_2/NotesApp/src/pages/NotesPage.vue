@@ -88,7 +88,7 @@ const note = ref("");
 const notes = ref([]);
 const error = ref("");
 
-const getUsers = async () => {
+const getNotes = async () => {
   await axios
     .get('http://127.0.0.1:8000/api/notes')
     .then((response) => {
@@ -99,10 +99,26 @@ const getUsers = async () => {
     })
 }
 
-getUsers()
+getNotes()
 
 const addNote = () => {
   router.push({ name: 'add-note' })
+}
+
+const delNote = async (id) => {
+  if (confirm("Are you sure you want to delete")) {
+    await axios
+      .delete(`http://127.0.0.1:8000/api/notes/${id}`)
+      .then((response) => {
+        if (response.status == 200) {
+          console.log('Delete note success')
+          getNotes()
+        }
+      }) 
+      .catch((error) => {
+        console.log(error.response);
+      });
+  }
 }
 
 // const editOrAdd = (param) => {
