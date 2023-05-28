@@ -6,7 +6,7 @@
         <button @click="addNote">+</button>
       </header>
       <div class="cards-container">
-        <div v-for="note in notes" :key="note.id" class="card">
+        <div v-for="note in notes" :key="note.id" class="card" :style="{ backgroundColor: note.background_color }">
           <p class="main-text">{{ note.text }}</p>
           <div class="action">
             <button @click="editNote(note.id)" class="edit">Edit</button>
@@ -72,6 +72,8 @@ main {
        .action {
         display: flex;
         justify-content: end;
+        padding-top: 10px;
+        border-top: 1px solid black;
         .edit, .delete {
           border: none;
           padding: 10px 20px;

@@ -66,11 +66,19 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const notes = reactive({
-  text: ''
+  text: '',
+  background_color: ''
 })
 
+function getRandomColor() {
+  return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
+}
+
 const createNote = () => {
-  axios.post('http://127.0.0.1:8000/api/notes', notes)
+  axios.post('http://127.0.0.1:8000/api/notes', {
+    text: notes.text,
+    background_color: getRandomColor()
+  })
   .then((response) => {
       console.log(response.data.data)
       router.push({ name: 'home' })
