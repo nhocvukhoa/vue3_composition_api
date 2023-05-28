@@ -6,7 +6,7 @@
         <button @click="addNote">+</button>
       </header>
       <div class="cards-container">
-        <div v-for="note in notes" :key="note.id" class="card" :style="{ backgroundColor: note.background_color }">
+        <div v-for="note in notes.data" :key="note.id" class="card" :style="{ backgroundColor: note.background_color }">
           <p class="main-text">{{ note.text }}</p>
           <div class="action">
             <button @click="editNote(note.id)" class="edit">Edit</button>
@@ -14,6 +14,11 @@
           </div>
         </div>
       </div>
+      <Bootstrap4Pagination
+          style="justify-content: center; margin-top: 20px"
+          :data="notes"
+          @pagination-change-page="getNotes"
+        />  
     </div>
   </main>
 </template>
@@ -89,6 +94,9 @@ main {
        }
       }
     }
+    .pagination {
+      justify-content: center !important;
+    }
   }
 }
 </style>
@@ -97,6 +105,7 @@ main {
 import axios from 'axios'
 import { useRouter } from "vue-router";
 import { ref } from "vue";
+import { Bootstrap4Pagination } from "laravel-vue-pagination";
 
 const router = useRouter();
 
@@ -104,9 +113,9 @@ const note = ref("");
 const notes = ref([]);
 const error = ref("");
 
-const getNotes = async () => {
+const getNotes = async (page = 1) => {
   await axios
-    .get('http://127.0.0.1:8000/api/notes')
+    .get(`http://127.0.0.1:8000/api/notes?page=${page}`)
     .then((response) => {
       notes.value = response.data.data
     })
