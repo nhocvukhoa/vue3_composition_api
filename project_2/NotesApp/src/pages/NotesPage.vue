@@ -5,6 +5,23 @@
         <h1>Notes</h1>
         <button @click="addNote">+</button>
       </header>
+      <div class="row">
+        <div class="col-4">
+          <form @submit.prevent="getNotes" class="flex">
+            <div class="input-group">
+              <input
+                v-model="search"
+                type="text"
+                placeholder="Search"
+                class="form-control"
+              >
+            </div>
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+          </form>
+        </div>
+      </div>
       <div class="cards-container">
         <div v-for="note in notes.data" :key="note.id" class="card" :style="{ backgroundColor: note.background_color }">
           <p class="main-text">{{ note.text }}</p>
@@ -57,7 +74,14 @@ main {
         cursor: pointer;
       }
     }
-
+    form {
+      width: 100%;
+      display: flex;
+      margin-bottom: 25px;
+      input {
+        margin-right: 10px;
+      }
+    }
     .cards-container {
       display: flex;
       flex-wrap: wrap;
@@ -112,10 +136,11 @@ const router = useRouter();
 const note = ref("");
 const notes = ref([]);
 const error = ref("");
+const search = ref("");
 
 const getNotes = async (page = 1) => {
   await axios
-    .get(`http://127.0.0.1:8000/api/notes?page=${page}`)
+    .get(`http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}`)
     .then((response) => {
       notes.value = response.data.data
     })
