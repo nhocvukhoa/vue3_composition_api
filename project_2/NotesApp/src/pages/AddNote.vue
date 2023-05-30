@@ -4,6 +4,7 @@
       <div class="card-body">
         <h1>Add Note</h1>
         <textarea v-model="notes.text" name="text" id="text" cols="30" rows="10"></textarea>
+        <span v-if="errors.text" class="text-error">{{ errors.text[0] }}</span>
         <div class="action">
           <button class="create" @click="createNote">Create</button>
           <button class="back" @click="goHome">Back</button>
@@ -27,11 +28,17 @@
     background-color: blueviolet;
     .card-body {
       display: flex;
-      text-align: center;
       justify-content: center;
       flex-direction: column;
       textarea {
         font-size: 20px;
+      }
+      h1 {
+        text-align: center;
+      }
+      .text-error {
+        color: #fff;
+        margin-top: 5px;
       }
       .action {
         display: flex;
@@ -69,6 +76,7 @@ const notes = reactive({
   text: '',
   background_color: ''
 })
+const errors = ref('')
 
 function getRandomColor() {
   return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
@@ -84,7 +92,7 @@ const createNote = () => {
       router.push({ name: 'home' })
   })
   .catch((error) => {
-      console.log(error)
+    errors.value = error.response.data.errors
   })
 }
 
