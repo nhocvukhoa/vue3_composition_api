@@ -4,6 +4,7 @@
       <div class="card-body">
         <h1>Edit Note </h1>
         <textarea v-model="note.text" name="text" id="text" cols="30" rows="10"></textarea>
+        <span v-if="errors.text" class="text-error">{{ errors.text[0] }}</span>
         <div class="action">
           <button @click="updateNote(id)" class="update">Update</button>
           <button @click="goHome" class="back">Back</button>
@@ -27,11 +28,17 @@
     background-color: blueviolet;
     .card-body {
       display: flex;
-      text-align: center;
       justify-content: center;
       flex-direction: column;
       textarea {
         font-size: 20px;
+      }
+      h1 {
+        text-align: center;
+      }
+      .text-error {
+        color: #fff;
+        margin-top: 5px;
       }
       .action {
         display: flex;
@@ -61,7 +68,7 @@
 
 <script setup>
 import axios from 'axios'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
@@ -70,6 +77,7 @@ const id = route.params.id;
 const note = reactive({
   text: ''
 })
+const errors = ref('')
 
 const getNoteEdit = async() => {
   await axios
@@ -91,7 +99,7 @@ const updateNote = async(id) => {
       }
     })
     .catch((error) => {
-      console.log(error.response);
+      errors.value = error.response.data.errors
     })
 }
 
