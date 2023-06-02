@@ -6,15 +6,18 @@
         <button @click="addNote">+</button>
       </header>
       <div class="row">
-        <div class="col-4">
-          <form @submit.prevent="getNotes" class="flex">
-            <div class="input-group">
+        <div class="col-12">
+          <form @submit.prevent="getNotes" class="flex flex-wrap">
+            <div class="input-group col-sm-4">
               <input
                 v-model="search"
                 type="text"
-                placeholder="Search"
+                placeholder="Enter content..."
                 class="form-control"
-              >
+              />
+            </div>
+            <div class="input-group col-sm-4">
+              <input v-model="date" type="date" class="form-control" />
             </div>
             <div class="input-group-append">
               <button type="submit" class="btn btn-primary">Search</button>
@@ -23,7 +26,12 @@
         </div>
       </div>
       <div class="cards-container">
-        <div v-for="note in notes.data" :key="note.id" class="card" :style="{ backgroundColor: note.background_color }">
+        <div
+          v-for="note in notes.data"
+          :key="note.id"
+          class="card"
+          :style="{ backgroundColor: note.background_color }"
+        >
           <p class="main-text">{{ note.text }}</p>
           <div class="action">
             <button @click="editNote(note.id)" class="edit">Edit</button>
@@ -32,10 +40,10 @@
         </div>
       </div>
       <Bootstrap4Pagination
-          style="justify-content: center; margin-top: 20px"
-          :data="notes"
-          @pagination-change-page="getNotes"
-        />  
+        style="justify-content: center; margin-top: 20px"
+        :data="notes"
+        @pagination-change-page="getNotes"
+      />
     </div>
   </main>
 </template>
@@ -74,14 +82,21 @@ main {
         cursor: pointer;
       }
     }
+
     form {
       width: 100%;
       display: flex;
       margin-bottom: 25px;
-      input {
-        margin-right: 10px;
+
+      .input-group {
+        padding-left: 0;
+
+        input {
+          margin-right: 10px;
+        }
       }
     }
+
     .cards-container {
       display: flex;
       flex-wrap: wrap;
@@ -98,26 +113,31 @@ main {
         margin-right: 20px;
         margin-bottom: 20px;
 
-       .action {
-        display: flex;
-        justify-content: end;
-        padding-top: 10px;
-        border-top: 1px solid black;
-        .edit, .delete {
-          border: none;
-          padding: 10px 20px;
-          cursor: pointer;
+        .action {
+          display: flex;
+          justify-content: end;
+          padding-top: 10px;
+          border-top: 1px solid black;
+
+          .edit,
+          .delete {
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+          }
+
+          .edit {
+            background-color: #0068d7;
+            margin-right: 10px;
+          }
+
+          .delete {
+            background-color: #c82333;
+          }
         }
-        .edit {
-          background-color: #0068D7;
-          margin-right: 10px;
-        }
-        .delete {
-          background-color: #C82333; 
-        }
-       }
       }
     }
+
     .pagination {
       justify-content: center !important;
     }
@@ -126,10 +146,12 @@ main {
 </style>
 
 <script setup>
-import axios from 'axios'
+import axios from "axios";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
+import DatePick from "vue-date-pick";
+import "vue-date-pick/dist/vueDatePick.css";
 
 const router = useRouter();
 
@@ -137,27 +159,29 @@ const note = ref("");
 const notes = ref([]);
 const error = ref("");
 const search = ref("");
+const date = ref("");
 
 const getNotes = async (page = 1) => {
   await axios
-    .get(`http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}`)
+    .get(`http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}&date=${date.value}`)
     .then((response) => {
-      notes.value = response.data.data
+      notes.value = response.data.data;
+      console.log(notes.value);
     })
     .catch((error) => {
-      console.log(error)
-    })
-}
+      console.log(error);
+    });
+};
 
-getNotes()
+getNotes();
 
 const addNote = () => {
-  router.push({ name: 'add-note' })
-}
+  router.push({ name: "add-note" });
+};
 
 const editNote = (id) => {
-  router.push({ name: 'edit-note', params: { id: id} })
-}
+  router.push({ name: "edit-note", params: { id: id } });
+};
 
 const delNote = async (id) => {
   if (confirm("Are you sure you want to delete")) {
@@ -165,15 +189,15 @@ const delNote = async (id) => {
       .delete(`http://127.0.0.1:8000/api/notes/${id}`)
       .then((response) => {
         if (response.status == 200) {
-          console.log('Delete note success')
-          getNotes()
+          console.log("Delete note success");
+          getNotes();
         }
-      }) 
+      })
       .catch((error) => {
         console.log(error.response);
       });
   }
-}
+};
 
 // const editOrAdd = (param) => {
 //   if (param === 'add') {
