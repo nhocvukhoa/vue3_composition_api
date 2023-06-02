@@ -150,8 +150,6 @@ import axios from "axios";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
-import DatePick from "vue-date-pick";
-import "vue-date-pick/dist/vueDatePick.css";
 
 const router = useRouter();
 
@@ -159,7 +157,7 @@ const note = ref("");
 const notes = ref([]);
 const error = ref("");
 const search = ref("");
-const date = ref("");
+const date = ref(getCurrentDate());
 
 const getNotes = async (page = 1) => {
   await axios
@@ -198,6 +196,14 @@ const delNote = async (id) => {
       });
   }
 };
+
+function getCurrentDate() {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+  const day = String(currentDate.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 // const editOrAdd = (param) => {
 //   if (param === 'add') {

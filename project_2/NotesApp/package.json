@@ -11,6 +11,7 @@
     "axios": "^1.4.0",
     "bootstrap": "^4.6.0",
     "laravel-vue-pagination": "^4.1.0",
+    "moment": "^2.29.4",
     "vue": "^3.3.2",
     "vue-date-pick": "^1.5.1",
     "vue-router": "^4.2.1"
