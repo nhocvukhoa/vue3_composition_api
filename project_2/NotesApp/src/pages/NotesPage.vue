@@ -1,41 +1,45 @@
 <template>
   <main>
     <div class="container">
-      <header>
-        <h1>Notes</h1>
-        <button @click="addNote">+</button>
-      </header>
       <div class="row">
-        <div class="col-12">
-          <form @submit.prevent="getNotes" class="flex flex-wrap">
-            <div class="input-group col-sm-4">
-              <input
-                v-model="search"
-                type="text"
-                placeholder="Enter content..."
-                class="form-control"
-              />
-            </div>
-            <div class="input-group col-sm-4">
-              <input v-model="date" type="date" class="form-control" />
-            </div>
-            <div class="input-group-append">
-              <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-          </form>
-        </div>
+        <header>
+          <h1>Notes</h1>
+          <button @click="addNote">+</button>
+        </header>
       </div>
-      <div class="cards-container">
+      <div class="row">
+        <form @submit.prevent="getNotes" class="flex flex-wrap form-search">
+          <div class="col-md-4 input-search">
+            <label>Content</label>
+            <input
+              v-model="search"
+              type="text"
+              placeholder="Enter content..."
+              class="form-control"
+            />
+          </div>
+          <div class="col-md-4 input-search">
+            <label>Created date</label>
+            <input v-model="date" type="date" class="form-control" />
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary btn-block" @click=handleSearch>Search</button>
+          </div>
+        </form>
+      </div>
+      <div class="total-result">There are {{ totalLength }} notes</div>
+      <div class="row">
         <div
-          v-for="note in notes.data"
+          v-for="note in notes.data" 
           :key="note.id"
-          class="card"
-          :style="{ backgroundColor: note.background_color }"
+          class="col-lg-4 col-xl-3 col-sm-6"
         >
-          <p class="main-text">{{ note.text }}</p>
-          <div class="action">
-            <button @click="editNote(note.id)" class="edit">Edit</button>
-            <button @click="delNote(note.id)" class="delete">Delete</button>
+          <div class="note-content" :style="{ backgroundColor: note.background_color }">
+            <p>{{ note.text }}</p>
+            <div class="action">
+              <button @click="editNote(note.id)" class="edit">Edit</button>
+              <button @click="delNote(note.id)" class="delete">Delete</button>
+            </div>
           </div>
         </div>
       </div>
@@ -55,24 +59,20 @@ main {
   position: relative;
 
   .container {
-    max-width: 1000px;
-    padding: 10px;
-    margin: 0 auto;
-
     header {
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-
+      margin-bottom: 25px;
+      padding: 0 15px 0 15px;
       h1 {
         font-weight: bold;
-        margin-bottom: 25px;
         font-size: 75px;
       }
 
       button {
         border: none;
-        padding: 10px;
         width: 50px;
         height: 50px;
         background-color: rgb(21, 20, 20);
@@ -80,6 +80,9 @@ main {
         color: #fff;
         font-size: 20px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
 
@@ -97,22 +100,27 @@ main {
       }
     }
 
-    .cards-container {
+    .total-result {
+      color: red;
+      text-align: center;
+      font-size: 25px;
+      margin-bottom: 20px;
+    }
+
+    .note-content {
+      width: 100%;
+      height: 250px;
+      position: relative;
+      background-color: rgb(237, 182, 44);
+      padding: 10px;
+      border-radius: 15px;
       display: flex;
-      flex-wrap: wrap;
-
-      .card {
-        width: 225px;
-        height: 225px;
-        background-color: rgb(237, 182, 44);
-        padding: 10px;
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        margin-right: 20px;
-        margin-bottom: 20px;
-
+      flex-direction: column;
+      justify-content: space-between;
+      word-wrap: break-word;
+        p {
+          font-size: 15px;
+        }
         .action {
           display: flex;
           justify-content: end;
@@ -135,11 +143,54 @@ main {
             background-color: #c82333;
           }
         }
+    }
+  }
+}
+
+@media(max-width: 1191px) {
+  main {
+    .container {
+      .note-content {
+        margin-bottom: 20px;
       }
     }
+  }
+}
 
-    .pagination {
-      justify-content: center !important;
+@media(max-width: 768px) {
+  main {
+    .container {
+      .form-search {
+        .input-search {
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+}
+
+@media(max-width: 576px) {
+  main {
+    .container {
+      header {
+        padding: 0 15px 0 15px;
+      }
+    }
+  }
+}
+
+@media(max-width: 320px) {
+  main {
+    .container {
+      header {
+        h1 {
+          font-size: 50px;
+        }
+        button {
+          width: 40px;
+          height: 40px;
+        }
+      }
     }
   }
 }
@@ -153,18 +204,17 @@ import { Bootstrap4Pagination } from "laravel-vue-pagination";
 
 const router = useRouter();
 
-const note = ref("");
 const notes = ref([]);
-const error = ref("");
 const search = ref("");
 const date = ref(getCurrentDate());
+const totalLength = ref(0);
 
 const getNotes = async (page = 1) => {
   await axios
     .get(`http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}&date=${date.value}`)
     .then((response) => {
       notes.value = response.data.data;
-      console.log(notes.value);
+      totalLength.value = response.data.data.total;
     })
     .catch((error) => {
       console.log(error);
