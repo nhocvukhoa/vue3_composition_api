@@ -10,25 +10,47 @@
       </div>
       <!-- End Header -->
 
-       <!-- Begin Search -->
+      <!-- Begin Search -->
       <div class="row">
         <form @submit.prevent="getNotes" class="flex flex-wrap form-search">
           <div class="col-md-3 input-search">
             <label>Content</label>
-            <input v-model="search" type="text" placeholder="Enter content..." class="form-control" />
+            <input
+              v-model="search"
+              type="text"
+              placeholder="Enter content..."
+              class="form-control"
+            />
           </div>
           <div class="col-md-3 input-search">
             <label>Created date</label>
             <input v-model="date" type="date" class="form-control" />
           </div>
           <div class="col-md-3 input-search">
-            <label>Sort</label>
-            <select v-model="selectedId" @change="updateSelectedName($event)" name="sort" id="sort" class="form-control">
-              <option v-for="item in sortDays" :key="item.id" :value="item.name">{{ item.name }}</option>
+            <label>Sort by created date</label>
+            <select
+              @change="updateSelectedName($event)"
+              name="sort"
+              id="sort"
+              class="form-control"
+            >
+              <option
+                v-for="item in sortDays"
+                :key="item.id"
+                :value="item.name"
+              >
+                {{ item.name }}
+              </option>
             </select>
           </div>
           <div class="col-md-3 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary btn-block" @click=handleSearch>Search</button>
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              @click="handleSearch"
+            >
+              Search
+            </button>
           </div>
         </form>
       </div>
@@ -37,8 +59,15 @@
       <!-- Begin Note Content -->
       <div class="total-result">There are {{ totalLength }} notes</div>
       <div class="row">
-        <div v-for="note in notes.data" :key="note.id" class="col-lg-4 col-xl-3 col-sm-6">
-          <div class="note-content" :style="{ backgroundColor: note.background_color }">
+        <div
+          v-for="note in notes.data"
+          :key="note.id"
+          class="col-lg-4 col-xl-3 col-sm-6"
+        >
+          <div
+            class="note-content"
+            :style="{ backgroundColor: note.background_color }"
+          >
             <p>{{ note.text }}</p>
             <div class="action">
               <button @click="editNote(note.id)" class="edit">Edit</button>
@@ -49,8 +78,11 @@
       </div>
       <!-- End Note Content -->
 
-      <Bootstrap4Pagination style="justify-content: center; margin-top: 20px" :data="notes"
-        @pagination-change-page="getNotes" />
+      <Bootstrap4Pagination
+        style="justify-content: center; margin-top: 20px"
+        :data="notes"
+        @pagination-change-page="getNotes"
+      />
     </div>
   </main>
 </template>
@@ -152,7 +184,7 @@ main {
   }
 }
 
-@media(max-width: 1191px) {
+@media (max-width: 1191px) {
   main {
     .container {
       .note-content {
@@ -162,7 +194,7 @@ main {
   }
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
   main {
     .container {
       .form-search {
@@ -174,7 +206,7 @@ main {
   }
 }
 
-@media(max-width: 576px) {
+@media (max-width: 576px) {
   main {
     .container {
       header {
@@ -184,7 +216,7 @@ main {
   }
 }
 
-@media(max-width: 320px) {
+@media (max-width: 320px) {
   main {
     .container {
       header {
@@ -217,24 +249,25 @@ const selectedName = ref(null);
 const sortDays = ref([
   {
     id: 1,
-    name: 'Increasing with creation time'
+    name: "Increase",
   },
   {
     id: 2,
-    name: 'Decreasing with creation time'
-  }
+    name: "Decrease",
+  },
 ]);
 const date = ref(getCurrentDate());
 const totalLength = ref(0);
 
 const updateSelectedName = (e) => {
   selectedName.value = e.target.value;
-  console.log(selectedName.value);
 };
 
 const getNotes = async (page = 1) => {
   await axios
-    .get(`http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}&date=${date.value}`)
+    .get(
+      `http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}&date=${date.value}&sort=${selectedName.value}`
+    )
     .then((response) => {
       notes.value = response.data.data;
       totalLength.value = response.data.data.total;
@@ -273,47 +306,8 @@ const delNote = async (id) => {
 function getCurrentDate() {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-  const day = String(currentDate.getDate()).padStart(2, '0');
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
-
-// const editOrAdd = (param) => {
-//   if (param === 'add') {
-//     name.value = param
-//     showModal.value = true
-//   } else if (param === 'edit') {
-//     name.value = param
-//     showModal.value = true
-//   }
-// }
-
-// function getRandomColor() {
-//   return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
-// }
-
-// const addNote = () => {
-//   if (note.value.length < 9) {
-//     return error.value = "Note needs to be 10 characters or more"
-//   }
-
-//   notes.value.push({
-//     id: Math.floor(Math.random() * 1000000),
-//     text: note.value,
-//     date: new Date(),
-//     backgroundColor: getRandomColor(),
-//   });
-
-//   showModal.value = false;
-//   note.value = "";
-//   error.value = "";
-//   console.log(notes.value);
-// };
-
-// const delNote = (noteId) => {
-//   if (confirm("Are you sure you want to delete")) {
-//     notes.value = notes.value.filter(note => note.id !== noteId)
-//   }
-//   console.log(notes)
-// }
 </script>
