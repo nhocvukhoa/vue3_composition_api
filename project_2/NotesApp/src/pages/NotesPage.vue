@@ -1,39 +1,43 @@
 <template>
   <main>
     <div class="container">
+      <!-- Begin Header -->
       <div class="row">
         <header>
           <h1>Notes</h1>
           <button @click="addNote">+</button>
         </header>
       </div>
+      <!-- End Header -->
+
+       <!-- Begin Search -->
       <div class="row">
         <form @submit.prevent="getNotes" class="flex flex-wrap form-search">
-          <div class="col-md-4 input-search">
+          <div class="col-md-3 input-search">
             <label>Content</label>
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Enter content..."
-              class="form-control"
-            />
+            <input v-model="search" type="text" placeholder="Enter content..." class="form-control" />
           </div>
-          <div class="col-md-4 input-search">
+          <div class="col-md-3 input-search">
             <label>Created date</label>
             <input v-model="date" type="date" class="form-control" />
+          </div>
+          <div class="col-md-3 input-search">
+            <label>Sort</label>
+            <select v-model="selectedId" @change="updateSelectedName($event)" name="sort" id="sort" class="form-control">
+              <option v-for="item in sortDays" :key="item.id" :value="item.name">{{ item.name }}</option>
+            </select>
           </div>
           <div class="col-md-3 d-flex align-items-end">
             <button type="submit" class="btn btn-primary btn-block" @click=handleSearch>Search</button>
           </div>
         </form>
       </div>
+      <!-- End Search -->
+
+      <!-- Begin Note Content -->
       <div class="total-result">There are {{ totalLength }} notes</div>
       <div class="row">
-        <div
-          v-for="note in notes.data" 
-          :key="note.id"
-          class="col-lg-4 col-xl-3 col-sm-6"
-        >
+        <div v-for="note in notes.data" :key="note.id" class="col-lg-4 col-xl-3 col-sm-6">
           <div class="note-content" :style="{ backgroundColor: note.background_color }">
             <p>{{ note.text }}</p>
             <div class="action">
@@ -43,11 +47,10 @@
           </div>
         </div>
       </div>
-      <Bootstrap4Pagination
-        style="justify-content: center; margin-top: 20px"
-        :data="notes"
-        @pagination-change-page="getNotes"
-      />
+      <!-- End Note Content -->
+
+      <Bootstrap4Pagination style="justify-content: center; margin-top: 20px" :data="notes"
+        @pagination-change-page="getNotes" />
     </div>
   </main>
 </template>
@@ -66,6 +69,7 @@ main {
       align-items: center;
       margin-bottom: 25px;
       padding: 0 15px 0 15px;
+
       h1 {
         font-weight: bold;
         font-size: 75px;
@@ -102,7 +106,6 @@ main {
 
     .total-result {
       color: red;
-      text-align: center;
       font-size: 25px;
       margin-bottom: 20px;
     }
@@ -118,31 +121,33 @@ main {
       flex-direction: column;
       justify-content: space-between;
       word-wrap: break-word;
-        p {
-          font-size: 15px;
+
+      p {
+        font-size: 15px;
+      }
+
+      .action {
+        display: flex;
+        justify-content: end;
+        padding-top: 10px;
+        border-top: 1px solid black;
+
+        .edit,
+        .delete {
+          border: none;
+          padding: 10px 20px;
+          cursor: pointer;
         }
-        .action {
-          display: flex;
-          justify-content: end;
-          padding-top: 10px;
-          border-top: 1px solid black;
 
-          .edit,
-          .delete {
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-          }
-
-          .edit {
-            background-color: #0068d7;
-            margin-right: 10px;
-          }
-
-          .delete {
-            background-color: #c82333;
-          }
+        .edit {
+          background-color: #0068d7;
+          margin-right: 10px;
         }
+
+        .delete {
+          background-color: #c82333;
+        }
+      }
     }
   }
 }
@@ -186,6 +191,7 @@ main {
         h1 {
           font-size: 50px;
         }
+
         button {
           width: 40px;
           height: 40px;
@@ -206,8 +212,25 @@ const router = useRouter();
 
 const notes = ref([]);
 const search = ref("");
+const selectedId = ref(null);
+const selectedName = ref(null);
+const sortDays = ref([
+  {
+    id: 1,
+    name: 'Increasing with creation time'
+  },
+  {
+    id: 2,
+    name: 'Decreasing with creation time'
+  }
+]);
 const date = ref(getCurrentDate());
 const totalLength = ref(0);
+
+const updateSelectedName = (e) => {
+  selectedName.value = e.target.value;
+  console.log(selectedName.value);
+};
 
 const getNotes = async (page = 1) => {
   await axios
