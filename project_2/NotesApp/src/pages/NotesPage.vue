@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="container">
+    <div class="note-page">
       <!-- Begin Header -->
       <div class="row">
         <header>
@@ -88,12 +88,12 @@
 </template>
 
 <style lang="scss" scoped>
-main {
-  width: 100vw;
-  height: 100vh;
+.tabs {
+  .tab-content {
+    main {
   position: relative;
 
-  .container {
+  .note-page {
     header {
       width: 100%;
       display: flex;
@@ -184,9 +184,12 @@ main {
   }
 }
 
+  }
+}
+
 @media (max-width: 1191px) {
   main {
-    .container {
+    .note-page{
       .note-content {
         margin-bottom: 20px;
       }
@@ -196,7 +199,7 @@ main {
 
 @media (max-width: 768px) {
   main {
-    .container {
+    .note-page {
       .form-search {
         .input-search {
           margin-bottom: 15px;
@@ -208,7 +211,7 @@ main {
 
 @media (max-width: 576px) {
   main {
-    .container {
+    .note-page {
       header {
         padding: 0 15px 0 15px;
       }
@@ -218,7 +221,7 @@ main {
 
 @media (max-width: 320px) {
   main {
-    .container {
+    .note-page {
       header {
         h1 {
           font-size: 50px;
@@ -235,6 +238,8 @@ main {
 </style>
 
 <script setup>
+import NoteTab from "../components/NoteTab.vue";
+
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
@@ -258,6 +263,7 @@ const sortDays = ref([
 ]);
 const date = ref(getCurrentDate());
 const totalLength = ref(0);
+const selectedNote = ref([]);
 
 const updateSelectedName = (e) => {
   selectedName.value = e.target.value;

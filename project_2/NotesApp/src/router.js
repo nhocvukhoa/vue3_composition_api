@@ -1,12 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import NotesPage from './pages/NotesPage.vue'
-
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: NotesPage,
+    component: () => import('./pages/HomePage.vue'),
   },
   {
     path: '/notes/add',
