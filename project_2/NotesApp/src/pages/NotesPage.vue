@@ -104,7 +104,7 @@
 
       h1 {
         font-weight: bold;
-        font-size: 75px;
+        font-size: 55px;
       }
 
       button {

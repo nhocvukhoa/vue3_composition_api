@@ -24,9 +24,10 @@
 .tabs {
   .tab-link {
     display: flex;
+    border-bottom: 1px solid black;
     .tab {
-      padding: 20px;
-      font-size: 25px;
+      padding: 15px;
+      font-size: 16px;
     }
     .activeTab {
       background-color: #F4F4F4;
