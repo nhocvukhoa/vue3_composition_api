@@ -7,6 +7,11 @@ const routes = [
     component: () => import('./pages/HomePage.vue'),
   },
   {
+    path: '/demo',
+    name: 'demo',
+    component: () => import('./pages/BinPage.vue'),
+  },
+  {
     path: '/notes/add',
     name: 'add-note',
     component: () => import('./pages/AddNote.vue'),

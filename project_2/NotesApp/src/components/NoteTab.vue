@@ -12,10 +12,12 @@
       </div>
     </div>
     <div class="tab-content">
-      <div v-show="selectedTabs === 'Home'">
+      <p v-if="selectedTabs === 'Home'" class="tab-detail">
         <NotesPage></NotesPage>
-      </div>
-      <div v-show="selectedTabs === 'Thùng rác'">Tab 2</div>
+      </p>
+      <p v-if="selectedTabs === 'Bin'" class="tab-detail">
+        <BinPage></BinPage>
+      </p>
     </div>
   </div>
 </template>
@@ -28,6 +30,7 @@
     .tab {
       padding: 15px;
       font-size: 16px;
+      cursor: pointer;
     }
     .activeTab {
       background-color: #F4F4F4;
@@ -35,17 +38,25 @@
   }
   .tab-content {
     width: 100%;
+    text-decoration: none;
   }
 }
 </style>
 
 <script setup>
-import NotesPage
- from '../pages/NotesPage.vue';
+import NotesPage from '../pages/NotesPage.vue';
+import BinPage from '../pages/BinPage.vue';
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const tabs = ref([
-  'Home', 'Thùng rác'
+  'Home', 'Bin'
 ]);
+
+const goTrashPage = () => {
+  router.push({ name: 'demo' })
+}
 const selectedTabs = ref('Home');
 </script>

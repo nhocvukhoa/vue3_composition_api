@@ -238,8 +238,6 @@
 </style>
 
 <script setup>
-import NoteTab from "../components/NoteTab.vue";
-
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
@@ -276,6 +274,7 @@ const getNotes = async (page = 1) => {
     )
     .then((response) => {
       notes.value = response.data.data;
+      console.log(response)
       totalLength.value = response.data.data.total;
     })
     .catch((error) => {
