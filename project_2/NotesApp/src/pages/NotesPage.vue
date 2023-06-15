@@ -56,13 +56,16 @@
       </div>
       <!-- End Search -->
 
-      <!-- Begin Note Content -->
+      <!-- Begin Note Total -->
       <div v-if="totalLength > 1">
         <p class="total-result">{{ totalLength }} notes</p>
       </div>
       <div v-else>
         <p class="total-result">{{ totalLength }} note</p>
       </div>
+      <!-- End Note Total -->
+
+       <!-- Begin Note Content -->
       <div class="row">
         <div
           v-for="note in notes.data"
