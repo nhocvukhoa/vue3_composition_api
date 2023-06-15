@@ -6,7 +6,7 @@
         <div class="bin-content" :style="{ backgroundColor: item.background_color }">
           <p>{{ item.text }}</p>
           <div class="action">
-            <button class="edit">Edit</button>
+            <button class="edit" @click="restore(item.id)">Restore</button>
             <button class="delete">Delete</button>
           </div>
         </div>
@@ -69,7 +69,10 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import { useRouter } from 'vue-router';
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
+
+const router = useRouter();
 
 const bin = ref([]);
 const totalBin = ref();
@@ -90,4 +93,20 @@ const getBin = async (page = 1) => {
 };
 
 getBin();
+
+const restore = async (id) => {
+  if (confirm("Are you sure you want to restore note?")) {
+    await axios
+      .put(`http://127.0.0.1:8000/api/bin/restore/${id}`)
+      .then((response) => {
+        if (response.status == 200) {
+          getBin();
+          console.log("Restore note success");
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  }
+}
 </script>
