@@ -7,7 +7,7 @@
           <p>{{ item.text }}</p>
           <div class="action">
             <button class="edit" @click="restore(item.id)">Restore</button>
-            <button class="delete">Delete</button>
+            <button class="delete" @click="destroy(item.id)">Delete</button>
           </div>
         </div>
       </div>
@@ -95,13 +95,29 @@ const getBin = async (page = 1) => {
 getBin();
 
 const restore = async (id) => {
-  if (confirm("Are you sure you want to restore note?")) {
+  if (confirm("Are you sure you want to restore note ?")) {
     await axios
       .put(`http://127.0.0.1:8000/api/bin/restore/${id}`)
       .then((response) => {
         if (response.status == 200) {
           getBin();
           console.log("Restore note success");
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  }
+}
+
+const destroy = async (id) => {
+  if (confirm("Are you sure you want to destroy note forever ?")) {
+    await axios
+      .delete(`http://127.0.0.1:8000/api/bin/${id}`)
+      .then((response) => {
+        if (response.status == 200) {
+          getBin();
+          console.log("Destroy note forever success");
         }
       })
       .catch((error) => {
