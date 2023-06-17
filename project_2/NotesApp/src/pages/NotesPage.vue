@@ -82,6 +82,10 @@
               <button @click="delNote(note.id)" class="delete">Delete</button>
             </div>
           </div>
+          <div class="note-footer">
+            <p class="note-created__at">{{ getCurrentDate(note.created_at) }}</p>
+            <i class="bi bi-star-fill" :class="{ noteRate: note.id === noteRateSelected }" @click="rateNote(note.id)"></i>
+          </div>
         </div>
       </div>
       <!-- End Note Content -->
@@ -99,7 +103,7 @@
 .tabs {
   .tab-content {
     main {
-  position: relative;
+      position: relative;
 
   .note-page {
     header {
@@ -189,6 +193,22 @@
         }
       }
     }
+
+    .note-footer {
+      display: flex;
+      justify-content: center;
+      .note-created__at {
+        margin-right: 5px;
+      }
+      .bi-star-fill {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .noteRate {
+        color: yellow;
+      }
+    }
   }
 }
 
@@ -255,7 +275,6 @@ const router = useRouter();
 
 const notes = ref([]);
 const search = ref("");
-const selectedId = ref(null);
 const selectedName = ref(null);
 const sortDays = ref([
   {
@@ -270,6 +289,8 @@ const sortDays = ref([
 const date = ref(getCurrentDate());
 const totalLength = ref(0);
 const selectedNote = ref([]);
+const noteRateSelected = ref(0);
+const textColor = ref('');
 
 const updateSelectedName = (e) => {
   selectedName.value = e.target.value;
@@ -282,7 +303,6 @@ const getNotes = async (page = 1) => {
     )
     .then((response) => {
       notes.value = response.data.data;
-      console.log(response)
       totalLength.value = response.data.data.total;
     })
     .catch((error) => {
@@ -316,11 +336,16 @@ const delNote = async (id) => {
   }
 };
 
+const rateNote = async(id) => {
+  noteRateSelected.value = id;
+  console.log(noteRateSelected.value);
+}
+
 function getCurrentDate() {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  return `${day}-${month}-${year}`;
 }
 </script>
