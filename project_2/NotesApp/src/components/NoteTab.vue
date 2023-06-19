@@ -18,6 +18,9 @@
       <p v-if="selectedTabs === 'Bin'" class="tab-detail">
         <BinPage></BinPage>
       </p>
+      <p v-if="selectedTabs === 'Favorite'" class="tab-detail">
+        <FavoritePage></FavoritePage>
+      </p>
     </div>
   </div>
 </template>
@@ -46,13 +49,14 @@
 <script setup>
 import NotesPage from '../pages/NotesPage.vue';
 import BinPage from '../pages/BinPage.vue';
+import FavoritePage from '../pages/FavoritePage.vue';
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
 const tabs = ref([
-  'Home', 'Bin'
+  'Home', 'Bin', 'Favorite'
 ]);
 
 const goTrashPage = () => {
