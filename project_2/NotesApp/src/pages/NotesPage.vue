@@ -84,7 +84,12 @@
           </div>
           <div class="note-footer">
             <p class="note-created__at">{{ getCurrentDate(note.created_at) }}</p>
-            <i class="bi bi-star-fill" :class="{ noteRate: note.id === noteRateSelected }" @click="rateNote(note.id)"></i>
+            <div v-if="note.rated === 1">
+              <i class="bi bi-star-fill noteRate" @click="ratingNote(note.id)"></i>
+            </div>
+            <div v-else>
+              <i class="bi bi-star-fill" @click="ratingNote(note.id)"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -288,9 +293,6 @@ const sortDays = ref([
 ]);
 const date = ref(getCurrentDate());
 const totalLength = ref(0);
-const selectedNote = ref([]);
-const noteRateSelected = ref(0);
-const textColor = ref('');
 
 const updateSelectedName = (e) => {
   selectedName.value = e.target.value;
@@ -302,6 +304,7 @@ const getNotes = async (page = 1) => {
       `http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}&date=${date.value}&sort=${selectedName.value}`
     )
     .then((response) => {
+      console.log(response.data.data.data)
       notes.value = response.data.data;
       totalLength.value = response.data.data.total;
     })
@@ -336,9 +339,18 @@ const delNote = async (id) => {
   }
 };
 
-const rateNote = async(id) => {
-  noteRateSelected.value = id;
-  console.log(noteRateSelected.value);
+const ratingNote = async(id) => {
+  await axios
+    .post('http://127.0.0.1:8000/api/notes/rate', {
+      note_id: id,
+      rated: true,
+    })
+    .then((response) => {
+      getNotes();
+    })
+    .catch((error) => {
+      console.log(error.response);
+    });
 }
 
 function getCurrentDate() {
