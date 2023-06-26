@@ -9,11 +9,12 @@
             <button class="delete" @click="destroy(item.id)">Delete</button>
           </div>
         </div>
+        <p>{{ item.daysSinceCreation }}</p>
       </div>
     </div>
 
     <Bootstrap4Pagination style="justify-content: center;" :data="favorite"
-      @pagination-change-page="getfavorite" />
+      @pagination-change-page="getFavorite" />
   </div>
 </template>
 
@@ -61,7 +62,7 @@
 
 <script setup>
 import axios from "axios";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from 'vue-router';
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
 
@@ -70,22 +71,33 @@ const router = useRouter();
 const favorite = ref([]);
 const totalfavorite = ref();
 
-const getfavorite = async (page = 1) => {
+const getFavorite = async (page = 1) => {
   await axios
     .get(
       `http://127.0.0.1:8000/api/favorite?page=${page}`
     )
     .then((response) => {
       favorite.value = response.data.data;
-      console.log(response.data.data)
       totalfavorite.value = response.data.data.total;
+      
+      const items = response.data.data;
+
+      const currentDate = new Date();
+    
+      items.data.forEach((item) => {
+        const createdAtDate = new Date(item.note.created_at);
+        const timeDiff = Math.abs(currentDate.getTime() - createdAtDate.getTime());
+        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        item.daysSinceCreation = daysDiff;
+      })
     })
     .catch((error) => {
       console.log(error);
     });
 };
 
-getfavorite();
+getFavorite();
 
 const destroy = async (id) => {
   if (confirm("Are you sure you want to destroy note favorite ?")) {
@@ -93,7 +105,7 @@ const destroy = async (id) => {
       .delete(`http://127.0.0.1:8000/api/favorite/${id}`)
       .then((response) => {
         if (response.status == 200) {
-          getfavorite();
+          getFavorite();
         }
       })
       .catch((error) => {

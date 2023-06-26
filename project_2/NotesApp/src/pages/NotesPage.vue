@@ -47,7 +47,6 @@
             <button
               type="submit"
               class="btn btn-primary btn-block"
-              @click="handleSearch"
             >
               Search
             </button>
@@ -83,11 +82,11 @@
             </div>
           </div>
           <div class="note-footer">
-            <p class="note-created__at">{{ getCurrentDate(note.created_at) }}</p>
-            <div v-if="note.rated === 1">
+            <p class="note-created__at">{{ note.created_at }}</p>
+            <div v-if="note.rating">
               <i class="bi bi-star-fill noteRate" @click="ratingNote(note.id)"></i>
             </div>
-            <div v-else>
+            <div v-else="!note.rating">
               <i class="bi bi-star-fill" @click="ratingNote(note.id)"></i>
             </div>
           </div>
@@ -284,18 +283,23 @@ const selectedName = ref(null);
 const sortDays = ref([
   {
     id: 1,
-    name: "Increase",
+    name: "-- Choose sort type --",
   },
   {
     id: 2,
+    name: "Increase",
+  },
+  {
+    id: 3,
     name: "Decrease",
   },
 ]);
-const date = ref(getCurrentDate());
+const date = ref('');
 const totalLength = ref(0);
 
 const updateSelectedName = (e) => {
   selectedName.value = e.target.value;
+  console.log(selectedName.value)
 };
 
 const getNotes = async (page = 1) => {
@@ -304,6 +308,7 @@ const getNotes = async (page = 1) => {
       `http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}&date=${date.value}&sort=${selectedName.value}`
     )
     .then((response) => {
+      console.log(selectedName.value)
       console.log(response.data.data.data)
       notes.value = response.data.data;
       totalLength.value = response.data.data.total;
@@ -358,6 +363,6 @@ function getCurrentDate() {
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
-  return `${day}-${month}-${year}`;
+  return `${year}-${month}-${day}`;
 }
 </script>
