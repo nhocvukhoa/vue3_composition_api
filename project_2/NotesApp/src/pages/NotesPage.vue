@@ -271,6 +271,7 @@
 
 <script setup>
 import axios from "axios";
+import moment from 'moment';
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
@@ -308,10 +309,18 @@ const getNotes = async (page = 1) => {
       `http://127.0.0.1:8000/api/notes?page=${page}&search=${search.value}&date=${date.value}&sort=${selectedName.value}`
     )
     .then((response) => {
-      console.log(selectedName.value)
-      console.log(response.data.data.data)
       notes.value = response.data.data;
+
+      const items = response.data.data;
+
+      items.data.forEach((item) => {
+        const formattedDate = moment(item.created_at).format('DD-MM-YYYY HH:mm:ss');
+
+        item.created_at = formattedDate;
+      });
+
       totalLength.value = response.data.data.total;
+      console.log(response.data.data.data)
     })
     .catch((error) => {
       console.log(error);

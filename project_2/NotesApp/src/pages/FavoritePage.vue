@@ -9,7 +9,14 @@
             <button class="delete" @click="destroy(item.id)">Delete</button>
           </div>
         </div>
-        <p>{{ item.daysSinceCreation }}</p>
+        <div class="favorite-footer">
+          <div v-if="item.daysSinceCreation > 1">
+            <p>{{ item.daysSinceCreation }} days</p>
+          </div>
+          <div v-else>
+            <p>{{ item.daysSinceCreation }} day</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -56,6 +63,10 @@
         background-color: #c82333;
       }
     }
+  }
+
+  .favorite-footer {
+    text-align: center;
   }
 }
 </style>
