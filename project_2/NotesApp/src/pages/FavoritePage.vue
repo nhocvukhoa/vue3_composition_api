@@ -1,6 +1,6 @@
 <template>
   <div class="favorite-page">
-    <h3>Total: {{ totalfavorite }}</h3>
+    <h3>Total: {{ totalFavorite }}</h3>
     <div class="row">
       <div v-for="item in favorite.data" :key="item.id" class="col-lg-4 col-xl-3 col-sm-6">
         <div class="favorite-content" :style="{ backgroundColor: item.note.background_color }">
@@ -73,14 +73,14 @@
 
 <script setup>
 import axios from "axios";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useRouter } from 'vue-router';
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
 
 const router = useRouter();
 
 const favorite = ref([]);
-const totalfavorite = ref();
+const totalFavorite = ref();
 
 const getFavorite = async (page = 1) => {
   await axios
@@ -89,7 +89,7 @@ const getFavorite = async (page = 1) => {
     )
     .then((response) => {
       favorite.value = response.data.data;
-      totalfavorite.value = response.data.data.total;
+      totalFavorite.value = response.data.data.total;
       
       const items = response.data.data;
 
