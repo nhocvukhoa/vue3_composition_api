@@ -55,6 +55,19 @@
       </div>
       <!-- End Search -->
 
+      <!-- Begin Menu Tool-->
+      <div class="row">
+        <div class="col-12">
+          <div class="menu-tool">
+            <h5>Menu tools</h5>
+            <div class="action">
+              <button class="btn btn-danger btn-del__all" @click="delMultiple">Delete Multiple</button>
+            </div>
+          </div>
+        </div>
+      </div>
+       <!-- End Menu Tool-->
+
       <!-- Begin Note Total -->
       <div v-if="totalLength > 1">
         <p class="total-result">{{ totalLength }} notes</p>
@@ -89,6 +102,11 @@
             <div v-else="!note.rating">
               <i class="bi bi-star-fill" @click="ratingNote(note.id)"></i>
             </div>
+            <input
+              type="checkbox"
+              v-model="selectedNote"
+              :value="note.id"
+            />
           </div>
         </div>
       </div>
@@ -201,10 +219,15 @@
     .note-footer {
       display: flex;
       justify-content: center;
+      padding-bottom: 15px;
+      p {
+        margin-bottom: 0;
+      }
       .note-created__at {
         margin-right: 5px;
       }
       .bi-star-fill {
+        margin-right: 5px;
         &:hover {
           cursor: pointer;
         }
@@ -212,6 +235,13 @@
       .noteRate {
         color: yellow;
       }
+    }
+
+    .menu-tool {
+      border: 1px solid brown;
+      margin-bottom: 15px;
+      padding: 15px;
+      position: relative;
     }
   }
 }
@@ -297,6 +327,7 @@ const sortDays = ref([
 ]);
 const date = ref('');
 const totalLength = ref(0);
+const selectedNote = ref([]);
 
 const updateSelectedName = (e) => {
   selectedName.value = e.target.value;
@@ -365,6 +396,18 @@ const ratingNote = async(id) => {
     .catch((error) => {
       console.log(error.response);
     });
+}
+
+const delMultiple = async() => {
+  if (confirm("Do you want to delete multiple notes?")) {
+    let params = selectedNote.value;
+    axios
+      .post("http://127.0.0.1:8000/api/notes/deleteMultiple", { params })
+      .then((response) => {
+        getNotes()
+        selectedNote.value = [];
+      });
+  }
 }
 
 function getCurrentDate() {
