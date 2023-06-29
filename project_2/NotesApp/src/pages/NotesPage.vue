@@ -140,7 +140,9 @@
           width: 100%;
           display: flex;
           margin-bottom: 25px;
-
+          label {
+            font-weight: 500;
+          }
           .input-group {
             padding-left: 0;
 
