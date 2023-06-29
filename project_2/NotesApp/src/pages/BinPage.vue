@@ -10,6 +10,9 @@
             <button class="delete" @click="destroy(item.id)">Delete</button>
           </div>
         </div>
+        <div class="bin-footer">
+          <p>{{ item.deleted_at }}</p>
+        </div>
       </div>
     </div>
 
@@ -63,11 +66,16 @@
       }
     }
   }
+
+  .bin-footer {
+    text-align: center;
+  }
 }
 </style>
 
 <script setup>
-import axios from "axios";
+import axios from "axios"
+import moment from 'moment'
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
@@ -84,8 +92,16 @@ const getBin = async (page = 1) => {
     )
     .then((response) => {
       bin.value = response.data.data;
-      console.log(response.data.data)
       totalBin.value = response.data.data.total;
+
+      const items = response.data.data;
+
+      items.data.forEach((item) => {
+        const formattedDate = moment(item.deleted_at).format('DD-MM-YYYY HH:mm:ss');
+
+        item.deleted_at = formattedDate;
+      });
+      console.log(items)
     })
     .catch((error) => {
       console.log(error);

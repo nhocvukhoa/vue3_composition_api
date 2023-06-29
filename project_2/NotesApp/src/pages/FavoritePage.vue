@@ -1,6 +1,7 @@
 <template>
   <div class="favorite-page">
-    <h3>Total: {{ totalFavorite }}</h3>
+    <h3 v-if="totalFavorite > 1">Total: {{ totalFavorite }}</h3>
+    <h3 v-else>Total: 0</h3>
     <div class="row">
       <div v-for="item in favorite.data" :key="item.id" class="col-lg-4 col-xl-3 col-sm-6">
         <div class="favorite-content" :style="{ backgroundColor: item.note.background_color }">
@@ -10,12 +11,7 @@
           </div>
         </div>
         <div class="favorite-footer">
-          <div v-if="item.daysSinceCreation > 1">
-            <p>{{ item.daysSinceCreation }} days</p>
-          </div>
-          <div v-else>
-            <p>{{ item.daysSinceCreation }} day</p>
-          </div>
+          <p>{{  item.created_at }}</p>
         </div>
       </div>
     </div>
@@ -73,6 +69,7 @@
 
 <script setup>
 import axios from "axios";
+import moment from 'moment';
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
@@ -89,19 +86,18 @@ const getFavorite = async (page = 1) => {
     )
     .then((response) => {
       favorite.value = response.data.data;
-      totalFavorite.value = response.data.data.total;
       
       const items = response.data.data;
 
-      const currentDate = new Date();
-    
       items.data.forEach((item) => {
-        const createdAtDate = new Date(item.note.created_at);
-        const timeDiff = Math.abs(currentDate.getTime() - createdAtDate.getTime());
-        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        const formattedDate = moment(item.created_at).format('DD-MM-YYYY HH:mm:ss');
 
-        item.daysSinceCreation = daysDiff;
-      })
+        item.created_at = formattedDate;
+      });
+
+      totalFavorite.value = response.data.data.total;
+
+      console.log(items)
     })
     .catch((error) => {
       console.log(error);
