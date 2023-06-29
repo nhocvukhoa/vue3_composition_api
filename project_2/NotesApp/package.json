@@ -12,6 +12,7 @@
     "bootstrap": "^4.6.0",
     "bootstrap-icons": "^1.10.5",
     "dayjs": "^1.11.8",
+    "element-plus": "^2.3.7",
     "laravel-vue-pagination": "^4.1.0",
     "moment": "^2.29.4",
     "vue": "^3.3.2",
