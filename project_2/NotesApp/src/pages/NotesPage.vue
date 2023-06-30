@@ -45,14 +45,16 @@
             <h5>Menu tools</h5>
             <div class="action">
               <el-button type="danger" size="large" class="btn-del__all" @click="delMultiple" plain>Delete Multiple</el-button>
-              <el-dropdown>
+              <el-dropdown @command="handleCommand">
                 <el-button size="large" type="primary" plain>
                   Grid<el-icon class="el-icon--right"><arrow-down /></el-icon>
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item>Small</el-dropdown-item>
-                    <el-dropdown-item>Large</el-dropdown-item>
+                    <el-dropdown-item command="small">Small</el-dropdown-item>
+                    <el-dropdown-item command="medium">Medium</el-dropdown-item>
+                    <el-dropdown-item command="large">Large</el-dropdown-item>
+                    <el-dropdown-item command="list">List</el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
@@ -73,8 +75,8 @@
 
       <!-- Begin Note Content -->
       <div class="row">
-        <div v-for="note in notes.data" :key="note.id" class="col-lg-4 col-xl-3 col-sm-6">
-          <div class="note-content" :style="{ backgroundColor: note.background_color }">
+        <div v-for="note in notes.data" :key="note.id" :class="selectedGrid">
+          <div class="note-content" :style="{ backgroundColor: note.background_color, height: heightGrid }">
             <p>{{ note.text }}</p>
             <div class="action">
               <button @click="editNote(note.id)" class="edit">Edit</button>
@@ -323,6 +325,8 @@ const sortDays = ref([
 const date = ref("");
 const totalLength = ref(0);
 const selectedNote = ref([]);
+const selectedGrid = ref('col-lg-4 col-xl-3 col-sm-6')
+const heightGrid = ref('250px')
 
 const updateSelectedName = (e) => {
   selectedName.value = e.target.value;
@@ -406,6 +410,20 @@ const delMultiple = async () => {
       });
   }
 };
+
+const handleCommand = async(command) => {
+  if (command === 'small') {
+    selectedGrid.value = 'col-xl-3 col-lg-3 col-sm-6';
+    heightGrid.value = '200px'
+  } else if (command === 'medium') {
+    selectedGrid.value = 'col-xl-3 col-lg-3 col-sm-6';
+    heightGrid.value = '250px'
+  } else if (command === 'large') {
+    selectedGrid.value = 'col-xl-6 col-lg-6 col-sm-6';
+  } else if (command === 'list') {
+    selectedGrid.value = 'col-xl-12'
+  }
+}
 
 function getCurrentDate() {
   const currentDate = new Date();
