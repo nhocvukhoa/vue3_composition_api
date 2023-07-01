@@ -44,6 +44,7 @@
           <div class="menu-tool">
             <h5>Menu tools</h5>
             <div class="action">
+              <el-button type="success" size="large" plain>Duplicate Multiple</el-button>
               <el-button type="danger" size="large" class="btn-del__all" @click="delMultiple" plain>Delete Multiple</el-button>
               <el-dropdown @command="handleCommand">
                 <el-button size="large" type="primary" plain>
