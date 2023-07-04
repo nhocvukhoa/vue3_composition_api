@@ -113,7 +113,7 @@ const updateNote = async(id) => {
       if (response.status == 200) {
         router.push({ name: 'home' })
       }
-      console.log(note)
+      console.log(typeof(note.order_by))
     })
     .catch((error) => {
       errors.value = error.response.data.errors

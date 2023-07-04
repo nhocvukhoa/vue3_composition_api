@@ -1,7 +1,6 @@
 <template>
   <div class="favorite-page">
-    <h3 v-if="totalFavorite > 1">Total: {{ totalFavorite }}</h3>
-    <h3 v-else>Total: 0</h3>
+    <h3>Total: {{ totalFavorite }}</h3>
     <div class="row">
       <div v-for="item in favorite.data" :key="item.id" class="col-lg-4 col-xl-3 col-sm-6">
         <div class="favorite-content" :style="{ backgroundColor: item.note.background_color }">
@@ -86,6 +85,7 @@ const getFavorite = async (page = 1) => {
     )
     .then((response) => {
       favorite.value = response.data.data;
+      totalFavorite.value = response.data.data.total;
       
       const items = response.data.data;
 
@@ -95,7 +95,6 @@ const getFavorite = async (page = 1) => {
         item.created_at = formattedDate;
       });
 
-      totalFavorite.value = response.data.data.total;
 
       console.log(items)
     })
