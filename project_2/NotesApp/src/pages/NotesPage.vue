@@ -44,7 +44,7 @@
           <div class="menu-tool">
             <h5>Menu tools</h5>
             <div class="action">
-              <el-button type="success" size="large" plain>Duplicate Multiple</el-button>
+              <el-button type="success" size="large" plain @click="duplicateMultiple">Duplicate Multiple</el-button>
               <el-button type="danger" size="large" class="btn-del__all" @click="delMultiple" plain>Delete Multiple</el-button>
               <el-dropdown @command="handleCommand">
                 <el-button size="large" type="primary" plain>
@@ -399,6 +399,19 @@ const ratingNote = async (id) => {
       console.log(error.response);
     });
 };
+
+const duplicateMultiple = async() => {
+  if (confirm("Do you want to duplicate multiple notes?")) {
+    let params = selectedNote.value;
+    console.log(params)
+    axios 
+      .post("http://127.0.0.1:8000/api/notes/duplicateMultiple", { params })
+      .then((response) => {
+        getNotes();
+        selectedNote.value = []
+      }) 
+  }
+}
 
 const delMultiple = async () => {
   if (confirm("Do you want to delete multiple notes?")) {
