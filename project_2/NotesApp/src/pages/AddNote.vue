@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-body">
         <h1>Add Note</h1>
-        <textarea v-model="notes.text" name="text" id="text" cols="30" rows="10"></textarea>
+        <CKEditorCustom v-model="notes.editorData" />
         <span v-if="errors.text" class="text-error">{{ errors.text[0] }}</span>
         <div class="action">
           <button class="create" @click="createNote">Create</button>
@@ -70,10 +70,11 @@
 import axios from 'axios'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import CKEditorCustom from '../components/CKEditorCustom.vue';
 
 const router = useRouter()
 const notes = reactive({
-  text: '',
+  editorData: '',
   background_color: ''
 })
 const errors = ref('')
@@ -84,7 +85,7 @@ function getRandomColor() {
 
 const createNote = () => {
   axios.post('http://127.0.0.1:8000/api/notes', {
-    text: notes.text,
+    text: notes.editorData,
     background_color: getRandomColor()
   })
   .then((response) => {
