@@ -78,7 +78,7 @@
       <div class="row">
         <div v-for="note in notes.data" :key="note.id" :class="selectedGrid">
           <div class="note-content" :style="{ backgroundColor: note.background_color, height: heightGrid }">
-            <p>{{ note.text }}</p>
+            <div v-html="note.text"></div>
             <div class="action">
               <button @click="editNote(note.id)" class="edit">Edit</button>
               <button @click="delNote(note.id)" class="delete">Delete</button>
