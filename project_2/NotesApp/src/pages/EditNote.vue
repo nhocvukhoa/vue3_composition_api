@@ -5,7 +5,7 @@
         <h1>Edit Note </h1>
         <div class="form-group">
           <label for="" class="text-white">Text</label>
-          <textarea v-model="note.text" name="text" id="text" cols="30" rows="10" class="form-control"></textarea>
+          <CKEditorCustom v-model="note.text" />
           <span v-if="errors.text" class="text-error">{{ errors.text[0] }}</span>
         </div>
         <div class="form-group">
@@ -81,6 +81,7 @@
 import axios from 'axios'
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
+import CKEditorCustom from '../components/CKEditorCustom.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -96,10 +97,9 @@ const getNoteEdit = async() => {
   await axios
     .get(`http://127.0.0.1:8000/api/notes/edit/${route.params.id}`)
     .then((response) => {
-      note.text = response.data.data.text;
+      note.text= response.data.data.text;
       note.order_by = response.data.data.order_by;
       notesOrderBy.value = response.data.notesOrderBy
-      console.log(notesOrderBy.value)
     })
     .catch((error) => {
       console.log(error.response);
@@ -113,7 +113,7 @@ const updateNote = async(id) => {
       if (response.status == 200) {
         router.push({ name: 'home' })
       }
-      console.log(typeof(note.order_by))
+      console.log(note)
     })
     .catch((error) => {
       errors.value = error.response.data.errors
