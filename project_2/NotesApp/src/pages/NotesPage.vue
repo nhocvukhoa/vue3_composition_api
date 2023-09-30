@@ -46,7 +46,7 @@
             <div class="action">
               <el-button type="success" size="large" plain @click="duplicateMultiple">Duplicate Multiple</el-button>
               <el-button type="danger" size="large" class="btn-del__all" @click="delMultiple" plain>Delete Multiple</el-button>
-              <el-dropdown @command="handleCommand">
+              <el-dropdown @command="handleGridCommand">
                 <el-button size="large" type="primary" plain>
                   Grid<el-icon class="el-icon--right"><arrow-down /></el-icon>
                 </el-button>
@@ -303,6 +303,7 @@ import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
 import { ArrowDown } from '@element-plus/icons-vue'
+import toastr from "toastr";
 
 const router = useRouter();
 
@@ -371,19 +372,17 @@ const editNote = (id) => {
 };
 
 const delNote = async (id) => {
-  if (confirm("Are you sure you want to delete")) {
-    await axios
-      .delete(`http://127.0.0.1:8000/api/notes/${id}`)
-      .then((response) => {
-        if (response.status == 200) {
-          console.log("Delete note success");
-          getNotes();
-        }
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
-  }
+  await axios
+    .delete(`http://127.0.0.1:8000/api/notes/${id}`)
+    .then((response) => {
+      if (response.status == 200) {
+        toastr.success(response.data.message, 'Notification');
+        getNotes();
+      }
+    })
+    .catch((error) => {
+      toastr.error('Failed to delete note', 'Error');
+    });
 };
 
 const ratingNote = async (id) => {
@@ -407,6 +406,7 @@ const duplicateMultiple = async() => {
     axios 
       .post("http://127.0.0.1:8000/api/notes/duplicateMultiple", { params })
       .then((response) => {
+        toastr.success(response.data.message, 'Notification');
         getNotes();
         selectedNote.value = []
       }) 
@@ -419,13 +419,14 @@ const delMultiple = async () => {
     axios
       .post("http://127.0.0.1:8000/api/notes/deleteMultiple", { params })
       .then((response) => {
+        toastr.success(response.data.message, 'Notification');
         getNotes();
         selectedNote.value = [];
       });
   }
 };
 
-const handleCommand = async(command) => {
+const handleGridCommand = async(command) => {
   if (command === 'small') {
     selectedGrid.value = 'col-xl-3 col-lg-3 col-sm-6';
     heightGrid.value = '200px'

@@ -71,6 +71,7 @@ import axios from 'axios'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import CKEditorCustom from '../components/CKEditorCustom.vue';
+import toastr from "toastr";
 
 const router = useRouter()
 const notes = reactive({
@@ -91,6 +92,7 @@ const createNote = () => {
   .then((response) => {
       console.log(response.data.data)
       router.push({ name: 'home' })
+      toastr.success(response.data.message, 'Notification Sent');
   })
   .catch((error) => {
     errors.value = error.response.data.errors

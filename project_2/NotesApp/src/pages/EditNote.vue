@@ -82,6 +82,7 @@ import axios from 'axios'
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 import CKEditorCustom from '../components/CKEditorCustom.vue';
+import toastr from "toastr";
 
 const route = useRoute();
 const router = useRouter();
@@ -112,6 +113,7 @@ const updateNote = async(id) => {
     .then((response) => {
       if (response.status == 200) {
         router.push({ name: 'home' })
+        toastr.success(response.data.message, 'Notification');
       }
       console.log(note)
     })
