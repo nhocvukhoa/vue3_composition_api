@@ -28,7 +28,7 @@
           class="bin-content"
           :style="{ backgroundColor: item.background_color }"
         >
-          <p>{{ item.text }}</p>
+          <p v-html="item.text"></p>
           <div class="action">
             <button class="edit" @click="restore(item.id)">Restore</button>
             <button class="delete" @click="destroy(item.id)">Delete</button>
