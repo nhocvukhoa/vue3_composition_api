@@ -4,7 +4,7 @@
     <div class="row">
       <div v-for="item in favorite.data" :key="item.id" class="col-lg-4 col-xl-3 col-sm-6">
         <div class="favorite-content" :style="{ backgroundColor: item.note.background_color }">
-          <p>{{ item.note.text }}</p>
+          <p v-html="item.note.text"></p>
           <div class="action">
             <button class="delete" @click="destroy(item.id)">Delete</button>
           </div>

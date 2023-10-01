@@ -126,6 +126,7 @@ import moment from "moment";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
+import toastr from "toastr";
 
 const router = useRouter();
 
