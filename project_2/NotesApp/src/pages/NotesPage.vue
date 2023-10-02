@@ -109,7 +109,6 @@
   .tab-content {
     main {
       position: relative;
-
       .note-page {
         header {
           width: 100%;
@@ -376,7 +375,7 @@ const delNote = async (id) => {
     .delete(`http://127.0.0.1:8000/api/notes/${id}`)
     .then((response) => {
       if (response.status == 200) {
-        toastr.success(response.data.message, 'Notification');
+        toastr.success(response.data.message, 'Success');
         getNotes();
       }
     })
@@ -392,10 +391,16 @@ const ratingNote = async (id) => {
       rated: true,
     })
     .then((response) => {
+      if (response.data.status === 200) {
+        toastr.success(response.data.message, 'Success');
+      } else {
+        toastr.error(response.data.error, 'Error');
+      }
+      
       getNotes();
     })
     .catch((error) => {
-      console.log(error.response);
+      toastr.error(response.data.error, 'Error');
     });
 };
 
@@ -406,7 +411,7 @@ const duplicateMultiple = async() => {
     axios 
       .post("http://127.0.0.1:8000/api/notes/duplicateMultiple", { params })
       .then((response) => {
-        toastr.success(response.data.message, 'Notification');
+        toastr.success(response.data.message, 'Success');
         getNotes();
         selectedNote.value = []
       }) 
@@ -419,7 +424,7 @@ const delMultiple = async () => {
     axios
       .post("http://127.0.0.1:8000/api/notes/deleteMultiple", { params })
       .then((response) => {
-        toastr.success(response.data.message, 'Notification');
+        toastr.success(response.data.message, 'Success');
         getNotes();
         selectedNote.value = [];
       });
