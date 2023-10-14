@@ -1,4 +1,40 @@
 <template>
+  <!--Begin Modal-->
+  <div class="row">
+    <div class="modal" v-if="isOpen">
+      <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Create folder</h3>
+          <button @click="isOpen = false" type="button" class="close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="folder-name">
+            <label for="folder-name">Name</label>
+            <input type="text" name="folder-name" id="folder-name">
+          </div>
+          <div class="folder-color">
+            <label for="folder-color">Color</label>
+            <div class="menu-color">
+              <div class="color-item"></div>
+              <div class="color-item"></div>
+              <div class="color-item"></div>
+              <div class="color-item"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="isOpen = false" type="button" class="btn btn-secondary">Close</button>
+          <button type="button" class="btn btn-primary">Create</button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <!--End Modal-->
+  
   <main>
     <div class="note-page">
       <!-- Begin Header -->
@@ -44,6 +80,7 @@
           <div class="menu-tool">
             <h5>Menu tools</h5>
             <div class="action">
+              <el-button type="info" size="large" plain @click="isOpen = true">Add Folder</el-button>
               <el-button type="success" size="large" plain @click="duplicateMultiple">Duplicate Multiple</el-button>
               <el-button type="danger" size="large" class="btn-del__all" @click="delMultiple" plain>Delete Multiple</el-button>
               <el-dropdown @command="handleGridCommand">
@@ -105,10 +142,46 @@
 </template>
 
 <style lang="scss" scoped>
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .modal-dialog {
+    width: 500px;
+  }
+  .modal-content {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    .folder-name, .folder-color {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+    .folder-color .menu-color {
+      display: flex;
+      .color-item {
+        background: red;
+        width: 50px;
+        height: 50px;
+        border-radius: 100%;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
 .tabs {
   .tab-content {
     main {
       position: relative;
+      
       .note-page {
         header {
           width: 100%;
@@ -328,6 +401,7 @@ const totalLength = ref(0);
 const selectedNote = ref([]);
 const selectedGrid = ref('col-lg-4 col-xl-3 col-sm-6')
 const heightGrid = ref('250px')
+const isOpen = ref(false);
 
 const updateSelectedName = (e) => {
   selectedName.value = e.target.value;
